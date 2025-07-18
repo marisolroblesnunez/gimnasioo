@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (option === 'reservas') {
             checkUserLoginAndLoadReservas();
         } else if (option === 'reseñas') {
-            showDynamicContent('reseñas-content');
+            window.location.href = 'testimonios.php';
         } else {
             showNotification(`Has seleccionado: ${getOptionText(option)}`);
         }
@@ -301,6 +301,100 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    function loadReseñas() {
+        const reseñasContent = document.getElementById('reseñas-content');
+        showDynamicContent('reseñas-content');
+        reseñasContent.innerHTML = '<div class="reseñas-layout"><div class="reseñas-columna"><h2>Lo que dicen nuestros miembros</h2><p>Cargando reseñas...</p></div><div class="formulario-columna"></div></div>';
+
+        const reseñasColumna = reseñasContent.querySelector('.reseñas-columna');
+        const formularioColumna = reseñasContent.querySelector('.formulario-columna');
+
+        // Cargar reseñas públicas
+        fetch('api/index.php?resource=testimonios')
+            .then(response => response.json())
+            .then(data => {
+                let reseñasHTML = '';
+                if (data.length > 0) {
+                    const reseñasGrid = document.createElement('div');
+                    reseñasGrid.className = 'testimonios-grid';
+                    data.forEach(testimonio => {
+                        const testimonioCard = document.createElement('div');
+                        testimonioCard.className = 'testimonio-card';
+                        testimonioCard.innerHTML = `
+                            <p>${testimonio.mensaje}</p>
+                            <span>- ${testimonio.nombre_usuario}</span>
+                        `;
+                        reseñasGrid.appendChild(testimonioCard);
+                    });
+                    reseñasHTML = reseñasGrid.outerHTML;
+                } else {
+                    reseñasHTML = '<p>Aún no hay testimonios publicados. ¡Sé el primero en dejar uno!</p>';
+                }
+                reseñasColumna.innerHTML = `<h2>Lo que dicen nuestros miembros</h2>${reseñasHTML}`;
+
+                // Verificar si el usuario está logueado para mostrar el formulario
+                return fetch('api/index.php?resource=check_session');
+            })
+            .then(response => response.json())
+            .then(sessionData => {
+                const formContainer = document.createElement('div');
+                formContainer.className = 'form-testimonio';
+
+                if (sessionData.logged_in) {
+                    formContainer.innerHTML = `
+                        <h2>Deja tu Testimonio</h2>
+                        <form id="form-enviar-testimonio">
+                            <div class="form-group">
+                                <label for="mensaje">Tu Mensaje:</label>
+                                <textarea id="mensaje" name="mensaje" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit">Enviar Testimonio</button>
+                            </div>
+                        </form>
+                    `;
+                    formularioColumna.appendChild(formContainer);
+
+                    document.getElementById('form-enviar-testimonio').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const mensaje = document.getElementById('mensaje').value;
+                        enviarTestimonio(mensaje);
+                    });
+                } else {
+                    formContainer.innerHTML = `
+                        <h2>Deja tu Testimonio</h2>
+                        <p>Debes <a href="admin/login.php">iniciar sesión</a> para poder dejar tu reseña.</p>
+                    `;
+                    formularioColumna.appendChild(formContainer);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar las reseñas:', error);
+                reseñasColumna.innerHTML += '<p>Hubo un error al cargar las reseñas. Inténtalo de nuevo más tarde.</p>';
+            });
+    }
+
+    function enviarTestimonio(mensaje) {
+        const formData = new FormData();
+        formData.append('mensaje', mensaje);
+
+        fetch('api/index.php?resource=enviar_testimonio', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            showNotification(data.message);
+            if (data.success) {
+                document.getElementById('mensaje').value = '';
+            }
+        })
+        .catch(error => {
+            console.error('Error al enviar testimonio:', error);
+            showNotification('Error de conexión al intentar enviar tu reseña.');
+        });
+    }
+
     // Función para obtener texto de la opción
     function getOptionText(option) {
         const texts = {
@@ -443,5 +537,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicialización
     console.log('PowerGym App inicializada correctamente');
 });
-
-

@@ -1,0 +1,172 @@
+
+/* === ESTILOS GENERALES === */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* === ESTILOS PARA LA SECCIÓN DE RESEÑAS === */
+
+/* Contenedor principal para el nuevo layout de dos columnas */
+.reseñas-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Columna para mostrar las reseñas */
+.reseñas-columna {
+    flex: 2; /* Ocupa 2/3 del espacio */
+    min-width: 300px;
+}
+
+/* Columna para el formulario */
+.formulario-columna {
+    flex: 1; /* Ocupa 1/3 del espacio */
+    min-width: 300px;
+}
+
+/* Títulos de las columnas */
+.reseñas-layout h2 {
+    font-size: 2em;
+    color: #4b0082; /* Morado oscuro de la paleta */
+    border-bottom: 3px solid #8a2be2; /* Morado más claro */
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+/* Grid para las tarjetas de testimonio */
+.testimonios-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna de tarjetas */
+    gap: 25px;
+}
+
+/* Tarjeta de testimonio individual */
+.testimonio-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid #8a2be2; /* Acento de color */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Icono de comillas */
+.testimonio-card::before {
+    content: '“';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 5em;
+    color: rgba(138, 43, 226, 0.1); /* Morado muy transparente */
+    z-index: 1;
+}
+
+.testimonio-card p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #555;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.testimonio-card span {
+    display: block;
+    text-align: right;
+    margin-top: 20px;
+    font-weight: bold;
+    font-style: italic;
+    color: #4b0082;
+    position: relative;
+    z-index: 2;
+}
+
+/* Estilos para el contenedor del formulario */
+.form-testimonio {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.form-testimonio h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    min-height: 120px;
+    resize: vertical;
+    font-size: 1em;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #8a2be2;
+    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+}
+
+.form-group button {
+    width: 100%;
+    background: linear-gradient(135deg, #8a2be2, #4b0082);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Mensaje para iniciar sesión */
+.form-testimonio p {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.form-testimonio a {
+    color: #8a2be2;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.form-testimonio a:hover {
+    text-decoration: underline;
+}

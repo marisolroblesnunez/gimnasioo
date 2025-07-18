@@ -89,26 +89,33 @@ switch ($resource) {
         break;
 
     case 'check_session':
-        if ($requestMethod == 'GET') {
-            if (isset($_SESSION['logueado']) && $_SESSION['logueado'] === true) {
-                echo json_encode([
-                    'logueado' => true,
-                    'username' => $_SESSION['usuario']['nombre'] ?? 'Usuario', // O el campo que corresponda
-                    'user_id' => $_SESSION['user_id']
-                ]);
-            } else {
-                echo json_encode(['logueado' => false]);
-            }
+        header('Content-Type: application/json');
+        echo json_encode(['logged_in' => isset($_SESSION['usuario_id'])]);
+        break;
+
+    case 'testimonios':
+        require_once __DIR__ . '/../controllers/testimonioController.php';
+        $testimonioController = new TestimonioController();
+        $testimonios = $testimonioController->obtenerTestimoniosParaWeb();
+        header('Content-Type: application/json');
+        echo json_encode($testimonios);
+        break;
+
+    case 'enviar_testimonio':
+        require_once __DIR__ . '/../controllers/testimonioController.php';
+        $testimonioController = new TestimonioController();
+        $resultado = $testimonioController->procesarEnvioTestimonio();
+        header('Content-Type: application/json');
+        if (!empty($resultado['errores'])) {
+            echo json_encode(['success' => false, 'message' => $resultado['errores'][0]]);
         } else {
-            header("HTTP/1.1 405 Method Not Allowed");
-            echo json_encode(['success' => false, 'message' => 'Método no permitido para el recurso check_session.']);
+            echo json_encode(['success' => true, 'message' => $resultado['mensaje_exito']]);
         }
         break;
 
     default:
-        // Si el recurso no se reconoce, devolvemos un error 404.
-        header("HTTP/1.0 404 Not Found");
-        echo json_encode(['success' => false, 'message' => 'Endpoint no encontrado.']);
+        http_response_code(404);
+        echo json_encode(['error' => 'Recurso no encontrado']);
         break;
 }
 ?>
